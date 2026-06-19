@@ -3,7 +3,20 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export default async function DashboardPage() {
-  const [jobs, stats] = await Promise.all([api.jobs(), api.resumeStats()]);
+  let connectionError: string | null = null;
+  let jobs: Awaited<ReturnType<typeof api.jobs>> = [];
+  let stats: Awaited<ReturnType<typeof api.resumeStats>> = {
+    total: 0,
+    skills: [],
+    average_experience: 0
+  };
+
+  try {
+    [jobs, stats] = await Promise.all([api.jobs(), api.resumeStats()]);
+  } catch (error) {
+    connectionError = error instanceof Error ? error.message : "Backend API is unavailable.";
+  }
+
   const pipeline = [
     { stage: "Sourced", count: 186, change: "+24" },
     { stage: "Screen", count: 92, change: "+11" },
@@ -23,6 +36,12 @@ export default async function DashboardPage() {
           </div>
         </div>
       </section>
+
+      {connectionError && (
+        <section className="border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+          Backend connection failed: {connectionError}. Check the frontend `NEXT_PUBLIC_API_BASE_URL` value and the backend Railway service logs.
+        </section>
+      )}
 
       <div className="grid gap-4 md:grid-cols-4">
         <Metric title="Candidates indexed" value={stats.total.toString()} helper="Resume corpus" />

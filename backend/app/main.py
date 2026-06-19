@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,6 +17,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origin_regex=os.getenv("ATS_CORS_ORIGIN_REGEX", r"https://.*\.(up\.railway\.app|vercel\.app)"),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -25,6 +28,11 @@ app.include_router(jobs.router, prefix="/api")
 app.include_router(search.router, prefix="/api")
 app.include_router(ats.router, prefix="/api")
 app.include_router(upload.router, prefix="/api")
+
+
+@app.get("/")
+def root():
+    return {"status": "ok", "service": "Local AI Recruiting ATS API"}
 
 
 @app.get("/api/health")

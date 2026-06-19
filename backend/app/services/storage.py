@@ -23,6 +23,7 @@ def ensure_data_dir() -> None:
 
 def read_json(path: Path, default: Any) -> Any:
     ensure_data_dir()
+    seed_demo_data_if_missing()
     if not path.exists():
         return default
     with path.open("r", encoding="utf-8") as file:
@@ -34,6 +35,29 @@ def write_json(path: Path, payload: Any) -> None:
     with _lock:
         with path.open("w", encoding="utf-8") as file:
             json.dump(payload, file, indent=2, ensure_ascii=False)
+
+
+def seed_demo_data_if_missing() -> None:
+    if RESUMES_PATH.exists() and JOBS_PATH.exists():
+        return
+    try:
+        import random
+
+        from scripts.generate_mock_data import JOB_SPECS, _job, _resume
+    except Exception:
+        return
+
+    random.seed(42)
+    with _lock:
+        if not RESUMES_PATH.exists():
+            resumes = [_resume(index) for index in range(1, 1001)]
+            RESUMES_PATH.write_text(json.dumps(resumes, indent=2), encoding="utf-8")
+        if not JOBS_PATH.exists():
+            jobs = [
+                _job(index, title, skills, location, compensation, domain)
+                for index, (title, skills, location, compensation, domain) in enumerate(JOB_SPECS, start=1)
+            ]
+            JOBS_PATH.write_text(json.dumps(jobs, indent=2), encoding="utf-8")
 
 
 def load_resumes() -> list[Resume]:

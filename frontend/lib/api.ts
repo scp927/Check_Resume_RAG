@@ -1,6 +1,11 @@
 import type { ATSRunResponse, JDResumeCheckResponse, Job, LangGraphSearchResponse, ParsedJD, Resume, SearchResult } from "@/types/ats";
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8001/api";
+const DEFAULT_API_BASE =
+  process.env.NODE_ENV === "production"
+    ? "https://checkresumerag-production.up.railway.app/api"
+    : "http://localhost:8000/api";
+
+export const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL ?? DEFAULT_API_BASE).replace(/\/$/, "");
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
@@ -12,7 +17,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     cache: "no-store"
   });
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
+    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
   }
   return response.json() as Promise<T>;
 }
