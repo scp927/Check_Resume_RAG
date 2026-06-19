@@ -35,6 +35,11 @@ def root():
     return {"status": "ok", "service": "Local AI Recruiting ATS API"}
 
 
+@app.get("/health")
+def railway_health():
+    return {"status": "ok"}
+
+
 @app.get("/api/health")
 def health():
     return {
