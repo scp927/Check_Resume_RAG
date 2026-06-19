@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(222 47% 97%);
+  --color-foreground: hsl(222 47% 11%);
+  --color-muted: hsl(215 28% 90%);
+  --color-border: hsl(214 32% 86%);
+  --color-primary: hsl(221 83% 53%);
+  --shadow-soft: 0 18px 60px rgba(15, 23, 42, 0.08);
+}
+
+:root {
+  --background: 222 47% 97%;
+  --foreground: 222 47% 11%;
+  --muted: 215 28% 90%;
+  --border: 214 32% 86%;
+  --primary: 221 83% 53%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: hsl(222 47% 11%);
+  background: #f4f6f8;
+}
+
+a {
+  text-decoration: none;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+@keyframes workflow-enter {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes workflow-initial {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes workflow-scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes result-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.workflow-message-enter {
+  animation: workflow-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.workflow-message-initial {
+  animation: workflow-initial 320ms ease-out both;
+}
+
+.workflow-scan {
+  animation: workflow-scan 1.15s linear infinite;
+}
+
+.result-reveal {
+  animation: result-reveal 420ms ease-out both;
+}
