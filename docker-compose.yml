@@ -3,6 +3,8 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+    environment:
+      - PORT=8000
     volumes:
       - ./data:/app/data
   frontend:
@@ -10,6 +12,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - PORT=3000
       - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
     depends_on:
       - backend
